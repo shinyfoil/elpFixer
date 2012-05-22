@@ -19,7 +19,7 @@ public class elpFixer {
 	public static void fixer(String inName) {
 		File inF = new File(inName);
 		StringBuilder path = new StringBuilder(inF.getAbsolutePath());
-		path.insert(path.length() - 4, "_fixed");
+		path.insert(path.length() - 4, "_flat");
 		File outF = new File(path.toString());
 		
 		try {
@@ -27,18 +27,34 @@ public class elpFixer {
 			BufferedWriter outStream = new BufferedWriter(new FileWriter(outF));
 			try {
 				System.out.println("Fixing " + inF.getName());
+				
+				for(int i = 0; i < 8; i++)
+					{
+					String garbage = inStream.readLine();
+					}
+
 				while(inStream.ready()) {
 					String temp = inStream.readLine();
 					
 					/* BEGIN FIXING */
-					if(temp.trim().length() == 0 || temp.startsWith("//") || temp.startsWith("%O"))
+					if(temp.trim().length() == 0 || temp.startsWith("//") || temp.startsWith("%O") || temp.startsWith("%S"))
 						;
-					else {
+					else if(temp.startsWith("%F"))
+					{
+						outStream.write(temp.substring(4));
+						outStream.newLine();
+					}
+					else if(temp.startsWith("%N"))
+					{
+						outStream.write(temp.substring(3));
+					}
+					else
+					{
 						outStream.write(temp);
 						outStream.newLine();
 					}
+					}
 				}
-			}
 			finally {
 				inStream.close();
 				outStream.close();
